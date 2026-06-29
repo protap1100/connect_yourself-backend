@@ -2,8 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import httpsStatus from "http-status";
 import { userServices } from "./user.service";
 import { catchAsync } from "../../utilties/catchAsync";
-
-
+import { sendResponse } from "../../utilties/sendResponse";
 
 // const createUser = async (req: Request, res: Response) => {
 //   try {
@@ -28,17 +27,25 @@ import { catchAsync } from "../../utilties/catchAsync";
 //   }
 // };
 
+
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body;
     const user = await userServices.registerUserIntoDB(payload);
-    res.status(httpsStatus.CREATED).json({
+    // res.status(httpsStatus.CREATED).json({
+    //   success: true,
+    //   statusCode: httpsStatus.CREATED,
+    //   message: "user registered successfully",
+    //   data: {
+    //     user,
+    //   },
+    // });
+
+    sendResponse(res, {
       success: true,
       statusCode: httpsStatus.CREATED,
-      message: "user registered successfully",
-      data: {
-        user,
-      },
+      message: "user Registered Successfully",
+      data: { user },
     });
   },
 );
