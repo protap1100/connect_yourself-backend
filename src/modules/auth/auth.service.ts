@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import { ILoginUser } from "./auth.interface";
+import jwt from "jsonwebtoken";
 
 const loginUser = async (payload: ILoginUser) => {
   const { email, password } = payload;
@@ -8,10 +9,29 @@ const loginUser = async (payload: ILoginUser) => {
     where: { email },
   });
   const isPasswordMatched = await bcrypt.compare(password, user.password);
-  if(!isPasswordMatched){
+  if (!isPasswordMatched) {
     throw new Error("Password is Incorrect");
   }
-  return user;
+
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, "accessSecret", {
+    expiresIn: "1d",
+  });
+
+  const refreshToken = jwt.sign(jwtPayload, "refreshSecret", {
+    expiresIn: "7d",
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const authService = {
