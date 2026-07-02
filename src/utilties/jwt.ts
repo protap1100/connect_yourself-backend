@@ -9,6 +9,17 @@ const createToken = (
     return token;
 };
 
+const verifyToken = (token: string, secret: string): JwtPayload => {
+  try {
+    const verifyToken = jwt.verify(token, secret) as JwtPayload;  
+    return verifyToken;
+  } catch (error:any) {
+    console.log("token verification error", error);
+    throw new Error(error.message);
+  }
+};
+
 export const jwtUtils = {
+  verifyToken,
   createToken,
 };
