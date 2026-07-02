@@ -27,7 +27,6 @@ import { sendResponse } from "../../utilties/sendResponse";
 //   }
 // };
 
-
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const payload = req.body;
@@ -50,6 +49,11 @@ const createUser = catchAsync(
   },
 );
 
+const getMyProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {},
+);
+
 export const userController = {
   createUser,
+  getMyProfile,
 };
