@@ -66,7 +66,7 @@ const getMyProfile = catchAsync(
       req.user?.id as string,
     );
 
-    
+
     res.send({
       success: true,
       statusCode: httpsStatus.OK,
@@ -78,7 +78,22 @@ const getMyProfile = catchAsync(
   },
 );
 
+const updateMyProfile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id as string;
+  const payload = req.body;
+  const updatedProfile = await userServices.updateMyProfileFromDB(userId, payload);
+  res.send({
+    success: true,
+    statusCode: httpsStatus.OK,
+    message: "User profile updated successfully",
+    data: {
+      updatedProfile,
+    },
+  });
+});
+
 export const userController = {
   createUser,
   getMyProfile,
+  updateMyProfile
 };

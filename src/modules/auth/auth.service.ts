@@ -52,6 +52,7 @@ const loginUser = async (payload: ILoginUser) => {
   };
 };
 
+
 export const authService = {
   loginUser,
 };
