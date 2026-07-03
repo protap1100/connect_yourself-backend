@@ -3,9 +3,6 @@ import httpsStatus from "http-status";
 import { userServices } from "./user.service";
 import { catchAsync } from "../../utilties/catchAsync";
 import { sendResponse } from "../../utilties/sendResponse";
-import config from "../../config";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { jwtUtils } from "../../utilties/jwt";
 
 // const createUser = async (req: Request, res: Response) => {
 //   try {
@@ -54,17 +51,20 @@ const createUser = catchAsync(
 
 const getMyProfile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { accessToken } = req.cookies;
-    const verifyUser = jwtUtils.verifyToken(
-      accessToken,
-      config.jwt_access_secret as string,
+    // const { accessToken } = req.cookies;
+    // console.log(req.user);
+    // const verifyUser = jwtUtils.verifyToken(
+    //   accessToken,
+    //   config.jwt_access_secret as string,
+    // );
+
+    // if (typeof verifyUser === "string") {
+    //   throw new Error("Invalid token");
+    // }
+
+    const profile = await userServices.getMyProfileFromDB(
+      req.user?.id as string,
     );
-
-    if (typeof verifyUser === "string") {
-      throw new Error("Invalid token");
-    }
-
-    const profile = await userServices.getMyProfileFromDB(verifyUser.id);
     res.send({
       success: true,
       statusCode: httpsStatus.OK,
