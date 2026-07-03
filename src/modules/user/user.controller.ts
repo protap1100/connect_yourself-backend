@@ -65,6 +65,8 @@ const getMyProfile = catchAsync(
     const profile = await userServices.getMyProfileFromDB(
       req.user?.id as string,
     );
+
+    
     res.send({
       success: true,
       statusCode: httpsStatus.OK,
