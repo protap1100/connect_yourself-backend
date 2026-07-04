@@ -9,24 +9,40 @@ const createPost = catchAsync(
     const id = req.user?.id;
     const payload = req.body;
     const result = await postsService.createPost(payload, id as string);
-    sendResponse(res,{
+    sendResponse(res, {
       success: true,
-      statusCode : httpsStatus.CREATED,
-      message : "Post Created Successfully",
-      data: result
+      statusCode: httpsStatus.CREATED,
+      message: "Post Created Successfully",
+      data: result,
     });
   },
 );
 
 const getAllPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await postsService.getAllPosts();  
-     sendResponse(res,{
+    const result = await postsService.getAllPosts();
+    sendResponse(res, {
       success: true,
-      statusCode : httpsStatus.OK,
-      message : "Post Fetched successfully",
-      data: result
-    })
+      statusCode: httpsStatus.OK,
+      message: "Post Fetched successfully",
+      data: result,
+    });
+  },
+);
+
+const getPostById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const postId = req.params.postId;
+    if (!postId) {
+      throw new Error("Post ID Requires In Params");
+    }
+    const result = await postsService.getPostById(postId as string);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Post retrived successfully",
+      data: result,
+    });
   },
 );
 
@@ -34,11 +50,19 @@ const getPostStats = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
 );
 const getMyPosts = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+    console.log("hellow wordl", authorId);
+    const result = await postsService.getMyPosts(authorId as string);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Post retrived successfully",
+      data: result,
+    });
+  },
 );
-const getPostById = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
-);
+
 const updatePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
 );
@@ -49,9 +73,9 @@ const deletePost = catchAsync(
 export const postController = {
   createPost,
   getAllPosts,
+  getPostById,
   getPostStats,
   getMyPosts,
-  getPostById,
   updatePost,
   deletePost,
 };
