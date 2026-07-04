@@ -17,7 +17,7 @@ const getAllPosts = async () => {
       author: {
         omit: {
           password: true,
-        }
+        },
       },
       comments: true,
     },
@@ -25,7 +25,24 @@ const getAllPosts = async () => {
   return posts;
 };
 
+const getPostStats = async () => {
+
+};
+
+const getMyPosts = async () => {
+
+};
+
+const updatePost = async () => {
+
+};
+
+const deletePost = async () => {
+
+};
+
+
 export const postsService = {
   createPost,
-  getAllPosts
+  getAllPosts,
 };
