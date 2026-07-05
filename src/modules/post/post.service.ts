@@ -25,47 +25,88 @@ const getAllPosts = async () => {
   return posts;
 };
 
-
 const getPostById = async (postId: string) => {
-  await prisma.post.update({
-    where: {
-      id: postId,
-    },
-    data: {
-      views: {
-        increment: 1,
+  // await prisma.post.update({
+  //   where: {
+  //     id: postId,
+  //   },
+  //   data: {
+  //     views: {
+  //       increment: 1,
+  //     },
+  //   },
+  // });
+
+  // const post = prisma.post.findUniqueOrThrow({
+  //   where: {
+  //     id: postId,
+  //   },
+  //   include: {
+  //     author: {
+  //       omit: {
+  //         password: true,
+  //       },
+  //     },
+  //     comments: {
+  //       where: {
+  //         status: commentStatus.APPROVED,
+  //       },
+  //       orderBy: {
+  //         createdAt: "asc",
+  //       },
+  //     },
+  //     _count :{
+  //       select:{
+  //         comments: true,
+  //       }
+  //     }
+
+  //   },
+  // });
+
+  // return post;
+
+  const transactionResult = await prisma.$transaction(async (tx) => {
+    await tx.post.update({
+      where: {
+        id: postId,
       },
-    },
+      data: {
+        views: {
+          increment: 1,
+        },
+      },
+    });
+
+    // throw new Error("fakse error");
+    const post = await tx.post.findUniqueOrThrow({
+      where: {
+        id: postId,
+      },
+      include: {
+        author: {
+          omit: {
+            password: true,
+          },
+        },
+        comments: {
+          where: {
+            status: commentStatus.APPROVED,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+    });
+    return post;
   });
-
-  const post = prisma.post.findUniqueOrThrow({
-    where: {
-      id: postId,
-    },
-    include: {
-      author: {
-        omit: {
-          password: true,
-        },
-      },
-      comments: {
-        where: {
-          status: commentStatus.APPROVED,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      },
-      _count :{
-        select:{
-          comments: true,
-        }
-      }
-
-    },
-  });
-
-  return post;
+  return transactionResult;
 };
 
 const getPostStats = async () => {};
