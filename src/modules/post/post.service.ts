@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayLoad } from "./post.interface";
+import { ICreatePostPayLoad, IUpdatePostPayload } from "./post.interface";
 
 const createPost = async (payload: ICreatePostPayLoad, userId: string) => {
   const result = await prisma.post.create({
@@ -10,7 +10,6 @@ const createPost = async (payload: ICreatePostPayLoad, userId: string) => {
   });
   return result;
 };
-
 const getAllPosts = async () => {
   const posts = await prisma.post.findMany({
     include: {
@@ -24,7 +23,6 @@ const getAllPosts = async () => {
   });
   return posts;
 };
-
 const getPostById = async (postId: string) => {
   const post = await prisma.post.findUniqueOrThrow({
     where: {
@@ -46,12 +44,11 @@ const getPostById = async (postId: string) => {
           password: true,
         },
       },
-      comment: true,
+      comments: true,
     },
   });
   return updatedPost;
 };
-
 const getPostStats = async () => {};
 
 const getMyPosts = async (authorId: string) => {
@@ -79,9 +76,43 @@ const getMyPosts = async (authorId: string) => {
   return result;
 };
 
-const updatePost = async () => {};
+const updatePost = async (
+  postId: string,
+  payload: IUpdatePostPayload,
+  authorId: string,
+  isAdmin: boolean,
+) => {
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+  });
 
-const deletePost = async () => {};
+  if (!isAdmin && post.authorId !== authorId) {
+    throw new Error("You are not the owner of this post");
+  }
+  const result = await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: payload,
+    include: {
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+      comments: true,
+    },
+  });
+  return result;
+};
+
+const deletePost = async (
+  postId: string,
+  authorId: string,
+  isAdmin: boolean,
+) => {};
 
 export const postsService = {
   createPost,

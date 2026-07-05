@@ -17,7 +17,6 @@ const createPost = catchAsync(
     });
   },
 );
-
 const getAllPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await postsService.getAllPosts();
@@ -29,7 +28,6 @@ const getAllPosts = catchAsync(
     });
   },
 );
-
 const getPostById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const postId = req.params.postId;
@@ -45,7 +43,27 @@ const getPostById = catchAsync(
     });
   },
 );
+const updatePost = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role == "ADMIN";
 
+    const postId = req.params.postId;
+    const payload = req.body;
+    const result = await postsService.updatePost(
+      postId as string,
+      payload,
+      authorId as string,
+      isAdmin,
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Post Updated successfully",
+      data: result,
+    });
+  },
+);
 const getPostStats = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
 );
@@ -61,10 +79,6 @@ const getMyPosts = catchAsync(
       data: result,
     });
   },
-);
-
-const updatePost = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
 );
 const deletePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
