@@ -65,7 +65,15 @@ const updatePost = catchAsync(
   },
 );
 const getPostStats = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await postsService.getPostStats();
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Post Stats Retrived successfully",
+      data: result,
+    });
+  },
 );
 const getMyPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -90,7 +98,7 @@ const deletePost = catchAsync(
       throw new Error("Post id Required in params");
     }
 
-     await postsService.deletePost(
+    await postsService.deletePost(
       postId as string,
       authorId as string,
       isAdmin as boolean,
