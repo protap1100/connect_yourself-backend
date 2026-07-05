@@ -81,7 +81,28 @@ const getMyPosts = catchAsync(
   },
 );
 const deletePost = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authorId = req.user?.id;
+    const isAdmin = req.user?.role == "ADMIN";
+    const postId = req.params.postId;
+
+    if (!postId) {
+      throw new Error("Post id Required in params");
+    }
+
+     await postsService.deletePost(
+      postId as string,
+      authorId as string,
+      isAdmin as boolean,
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Post Deleted successfully",
+      data: null,
+    });
+  },
 );
 
 export const postController = {
