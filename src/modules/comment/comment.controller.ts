@@ -32,13 +32,30 @@ const getCommentsByAuthorId = catchAsync(
   },
 );
 
-const getCommentsByCommentId = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
-);
+const getCommentByPostId = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
+    const { postId } = req.params
+    const result = await commentService.getCommentByCommentId(postId as string)
+    sendResponse(res, {
+        success: true,
+        statusCode: httpsStatus.OK,
+        message: "Comment retrieved successfully",
+        data: result
+    })
+})
 
-const updateComment = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
-);
+const updateComment = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
+    const user = req.user;
+    const { commentId } = req.params;
+    const authorId = user?.id as string;
+    const payload = req.body;
+    const result = await commentService.updateComment(commentId as string, payload, authorId)
+    sendResponse(res, {
+        success: true,
+        statusCode: httpsStatus.OK,
+        message: "Comment updated successfully",
+        data: result
+    })
+})
 
 const deleteComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
@@ -51,7 +68,7 @@ const moderateComment = catchAsync(
 export const commentController = {
   createComment,
   getCommentsByAuthorId,
-  getCommentsByCommentId,
+  getCommentByPostId,
   updateComment,
   deleteComment,
   moderateComment,
