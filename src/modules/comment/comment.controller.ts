@@ -66,11 +66,38 @@ const updateComment = catchAsync(
 );
 
 const deleteComment = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const { commentId } = req.params;
+    const authorId = user?.id as string;
+    const result = await commentService.deleteComment(
+      commentId as string,
+      authorId,
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Comment deleted successfully",
+      data: result,
+    });
+  },
 );
 
 const moderateComment = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {},
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { commentId } = req.params;
+    const payload = req.body;
+    const result = await commentService.moderateComment(
+      commentId as string,
+      payload,
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Comment moderated successfully",
+      data: result,
+    });
+  },
 );
 
 export const commentController = {
