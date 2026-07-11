@@ -32,30 +32,38 @@ const getCommentsByAuthorId = catchAsync(
   },
 );
 
-const getCommentByPostId = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
-    const { postId } = req.params
-    const result = await commentService.getCommentByCommentId(postId as string)
+const getCommentByPostId = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { postId } = req.params;
+    const result = await commentService.getCommentByCommentId(postId as string);
     sendResponse(res, {
-        success: true,
-        statusCode: httpsStatus.OK,
-        message: "Comment retrieved successfully",
-        data: result
-    })
-})
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Comment retrieved successfully",
+      data: result,
+    });
+  },
+);
 
-const updateComment = catchAsync(async (req : Request, res : Response, next : NextFunction) => {
+const updateComment = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
     const { commentId } = req.params;
     const authorId = user?.id as string;
     const payload = req.body;
-    const result = await commentService.updateComment(commentId as string, payload, authorId)
+    const result = await commentService.updateComment(
+      commentId as string,
+      payload,
+      authorId,
+    );
     sendResponse(res, {
-        success: true,
-        statusCode: httpsStatus.OK,
-        message: "Comment updated successfully",
-        data: result
-    })
-})
+      success: true,
+      statusCode: httpsStatus.OK,
+      message: "Comment updated successfully",
+      data: result,
+    });
+  },
+);
 
 const deleteComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {},
