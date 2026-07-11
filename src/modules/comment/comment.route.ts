@@ -11,15 +11,12 @@ router.post(
   commentController.createComment,
 );
 
-router.get(
-  "/author/authorId",
-  commentController.getCommentsByAuthorId,
-);
+router.get("/author/authorId", commentController.getCommentsByAuthorId);
 
-router.get(
-  "/:commentId",
-  commentController.getCommentsByCommentId,
-);
+// router.get(
+//   "/:commentId",
+//   commentController.getCommentsByCommentsId,
+// );
 
 router.patch(
   "/:commentId",
@@ -30,9 +27,13 @@ router.patch(
 router.delete(
   "/:commentId",
   auth(Role.USER, Role.ADMIN, Role.AUTHOR),
-  commentController.deleteComment
+  commentController.deleteComment,
 );
 
-router.put("/:commentId/moderate", auth(Role.ADMIN), commentController.moderateComment);
+router.put(
+  "/:commentId/moderate",
+  auth(Role.ADMIN),
+  commentController.moderateComment,
+);
 
 export const commentRoutes = router;
