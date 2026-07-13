@@ -13,6 +13,26 @@ const createPost = async (payload: ICreatePostPayLoad, userId: string) => {
 };
 const getAllPosts = async () => {
   const posts = await prisma.post.findMany({
+    // where: {
+    //   title: "my name is protap",
+    //   content: "TypeScript is a strongly typed programming language that builds on JavaScript by adding static type definitions.",
+    // },
+    // where: {
+    //   AND: [
+    //     {
+    //       title: "my name is protap",
+    //     },
+    //     {
+    //       content:
+    //         "TypeScript is a strongly typed programming language that builds on JavaScript by adding static type definitions.",
+    //     },
+    //     {
+    //       tags: {
+    //         hasSome: ["TypeScript", "JavaScript", "Programming"],
+    //       },
+    //     },
+    //   ],
+    // },
     include: {
       author: {
         omit: {
