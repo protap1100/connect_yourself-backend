@@ -63,10 +63,7 @@ const getMyProfileFromDB = async (userId: string) => {
   return user;
 };
 
-const updateMyProfileFromDB = async (
-  userId: string,
-  payload: any,
-) => {
+const updateMyProfileFromDB = async (userId: string, payload: any) => {
   const { name, email, profilePhoto, bio } = payload;
 
   const updatedUser = await prisma.user.update({
@@ -81,7 +78,7 @@ const updateMyProfileFromDB = async (
         },
       },
     },
-    omit : {
+    omit: {
       password: true,
     },
     include: {

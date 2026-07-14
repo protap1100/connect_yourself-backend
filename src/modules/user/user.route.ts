@@ -1,4 +1,4 @@
-import {  Router } from "express";
+import { Router } from "express";
 import { userController } from "./user.controller";
 import { Role } from "../../../generated/prisma/enums";
 import { auth } from "../../middlewares/auth";
@@ -35,6 +35,10 @@ router.get(
   auth(Role.ADMIN, Role.USER, Role.AUTHOR),
   userController.getMyProfile,
 );
-router.put("/my-profile", auth(Role.ADMIN, Role.USER, Role.AUTHOR), userController.updateMyProfile);
+router.put(
+  "/my-profile",
+  auth(Role.ADMIN, Role.USER, Role.AUTHOR),
+  userController.updateMyProfile,
+);
 
 export const userRoutes = router;
