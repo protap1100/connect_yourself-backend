@@ -94,7 +94,7 @@ const moderateComment = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpsStatus.OK,
-      message: "Comment moderated successfully",
+      message: "Comment Updated successfully",
       data: result,
     });
   },
