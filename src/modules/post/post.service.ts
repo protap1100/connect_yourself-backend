@@ -33,6 +33,66 @@ const getAllPosts = async () => {
     //     },
     //   ],
     // },
+
+    // where: {
+    //   title: {
+    //     contains: "Roaldo",
+    //     mode: "insensitive",
+    //   },
+    //   // not ideal for partial match
+    //   // content: {
+    //   //   contains : "ronaldo",
+    //   // }
+    // },
+
+    // where: {
+    //   OR: [
+    //     {
+    //       title: {
+    //         contains: "Ronaldo",
+    //         mode: "insensitive",
+    //       },
+    //     },
+    //     {
+    //       content: {
+    //         contains: "Ronaldo",
+    //         mode: "insensitive",
+    //       },
+    //     },
+    //   ],
+    // },
+
+    // combining search and filtering
+    where: {
+      //  filter and searching combined
+      AND: [
+        {
+          // searching only
+          OR: [
+            {
+              title: {
+                contains: "Ronaldo",
+                mode: "insensitive",
+              },
+            },
+            {
+              content: {
+                contains: "Ronaldo",
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+        // for filtering
+        {
+          title: "Ronaldo",
+        },
+        {
+          content: "Ronaldo",
+        },
+      ],
+    },
+
     include: {
       author: {
         omit: {
@@ -41,6 +101,7 @@ const getAllPosts = async () => {
       },
       comments: true,
     },
+    
   });
   return posts;
 };
