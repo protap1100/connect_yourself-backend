@@ -1,6 +1,11 @@
 import { commentStatus, postStatus } from "../../../generated/prisma/enums";
+import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
-import { ICreatePostPayLoad, IUpdatePostPayload } from "./post.interface";
+import {
+  ICreatePostPayLoad,
+  IPostQuery,
+  IUpdatePostPayload,
+} from "./post.interface";
 
 const createPost = async (payload: ICreatePostPayLoad, userId: string) => {
   const result = await prisma.post.create({
@@ -11,7 +16,17 @@ const createPost = async (payload: ICreatePostPayLoad, userId: string) => {
   });
   return result;
 };
-const getAllPosts = async () => {
+
+// const query: IPostQuery = {
+
+// };
+
+const getAllPosts = async (query: IPostQuery) => {
+  const limit = query.limit ? Number(query.limit) : 10;
+  const page = query.page ? Number(query.page) : 1;
+  const skip = (page - 1) * limit;
+  const sortBy = query.sortBy ? query.sortBy : "createdAt";
+  const sortOrder = query.sortOrder ? query.sortOrder : "desc";
   const posts = await prisma.post.findMany({
     // where: {
     //   title: "my name is protap",
@@ -63,35 +78,78 @@ const getAllPosts = async () => {
     // },
 
     // combining search and filtering
+    // where: {
+    //   //  filter and searching combined
+    //   AND: [
+    //     {
+    //       // searching only
+    //       OR: [
+    //         {
+    //           title: {
+    //             contains: "Ronaldo",
+    //             mode: "insensitive",
+    //           },
+    //         },
+    //         {
+    //           content: {
+    //             contains: "Ronaldo",
+    //             mode: "insensitive",
+    //           },
+    //         },
+    //       ],
+    //     },
+    //     // for filtering
+    //     {
+    //       title: "Ronaldo",
+    //     },
+    //     {
+    //       content: "Ronaldo",
+    //     },
+    //   ],
+    // },
+    // take: 1,  means how many i want to show
+    // skip: 1,  means how many pages i want to skip for the next page F
+    // (page -1) * limit;
+
+    // sorting asc and descending
+    // orderBy: {
+    //   title: "desc",
+    //   createdAt: "asc",
+    // },
+
     where: {
-      //  filter and searching combined
       AND: [
-        {
-          // searching only
-          OR: [
-            {
-              title: {
-                contains: "Ronaldo",
-                mode: "insensitive",
-              },
-            },
-            {
-              content: {
-                contains: "Ronaldo",
-                mode: "insensitive",
-              },
-            },
-          ],
-        },
-        // for filtering
-        {
-          title: "Ronaldo",
-        },
-        {
-          content: "Ronaldo",
-        },
+        query.searchTerm
+          ? {
+              OR: [
+                {
+                  title: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: query.searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {},
+
+        // TITLE FILTERING
+        query.title ? { title: query.title } : {},
+        query.content ? { content: query.content } : {},
       ],
     },
+
+    take: limit,
+    skip: skip,
+
+    orderBy: {
+    [sortBy]: sortOrder,
+  },
 
     include: {
       author: {
@@ -101,7 +159,6 @@ const getAllPosts = async () => {
       },
       comments: true,
     },
-    
   });
   return posts;
 };
