@@ -47,6 +47,32 @@ const createCheckoutSession = async (userId: string) => {
   };
 };
 
+const handleWebHook = (payload: Buffer, signature: string) => {
+  const endpointSecret = config.stripe_webhook_secret;
+  const event = stripe.webhooks.constructEvent(
+    payload,
+    signature,
+    endpointSecret,
+  );
+
+  switch (event.type) {
+    case "checkout.session.completed":
+      // const paymentObject = event.data.object;
+      event.data
+      break;
+    case "customer.subscription.updated":
+      // const paymentObject = event.data.object;
+      break;
+    case "customer.subscription.updated":
+      // const paymentObject;
+      break;
+    default:
+      console.log(`No event matched Unhandled event type ${event.type}.`);
+      break;
+  }
+};
+
 export const subscriptionService = {
   createCheckoutSession,
+  handleWebHook,
 };
