@@ -68,7 +68,7 @@ const refreshToken = async (refreshToken: string) => {
   });
 
   if (user.activeStatus === "BLOCKED") {
-    throw new Error("Your account has been blocked. Please contact support.");
+    throw new Error("Your account has been blocked. Please contact to support.");
   }
 
   const jwtPayload = {
