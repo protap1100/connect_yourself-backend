@@ -83,7 +83,7 @@ const getPostStats = catchAsync(
 const getMyPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const authorId = req.user?.id;
-    // console.log("hellow wordl", authorId);
+    // console.log("hello world", authorId);
     const result = await postsService.getMyPosts(authorId as string);
     sendResponse(res, {
       success: true,
